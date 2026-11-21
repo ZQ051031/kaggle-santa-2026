@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+# Competition data is subject to the Kaggle rules: do not commit it.
+puzzles.csv
+practice_puzzles.csv
+sample_submission.csv
+submission*.csv
+out/

@@ -1,0 +1,38 @@
+$ python3 solve.py --puzzles data/example_puzzle.csv --out results/example_submission.csv --time 1 --workers 1
+[1/1] example_0001 len=4 lb=4 (0.0s) exact
+wrote results/example_submission.csv: score=4 (1 improved) in 0.0s
+$ python3 score.py --puzzles data/example_puzzle.csv --submission results/example_submission.csv
+VALID  puzzles=1  score=4  lower_bound=4  ratio=1.000
+$ python3 baseline.py --puzzles data/synthetic_puzzles.csv --out results/synthetic_baseline.csv
+wrote results/synthetic_baseline.csv: score=57653
+$ python3 score.py --puzzles data/synthetic_puzzles.csv --submission results/synthetic_baseline.csv
+family                n    score       lb   ratio
+independent          20    13471      265  50.834
+mixed                20    11867      269  44.115
+multiplicative       20    13228      281  47.075
+shared               20    18746      384  48.818
+tiny                 20      341       78   4.372
+VALID  puzzles=100  score=57653  lower_bound=1277  ratio=45.147
+$ time python3 solve.py --puzzles data/synthetic_puzzles.csv --out results/synthetic_submission.csv --time 5 --workers 8 2>results/synthetic_solve.log
+wrote results/synthetic_submission.csv: score=6973 (100 improved) in 71.5s
+
+real	1m11.546s
+user	9m9.640s
+sys	0m1.565s
+$ python3 score.py --puzzles data/synthetic_puzzles.csv --submission results/synthetic_submission.csv
+family                n    score       lb   ratio
+independent          20     2015      265   7.604
+mixed                20     1658      269   6.164
+multiplicative       20      866      281   3.082
+shared               20     2285      384   5.951
+tiny                 20      149       78   1.910
+VALID  puzzles=100  score=6973  lower_bound=1277  ratio=5.460
+$ # negative check: first instruction changed to ["-",0,0,1] (3-3=0, illegal)
+$ python3 score.py --puzzles data/example_puzzle.csv --submission results/example_submission_invalid.csv
+INVALID: 1 error(s)
+  example_0001: instruction 0 is illegal: 3 - 3
+exit=1
+$ python3 -m unittest discover -s tests
+Ran 7 tests in 16.701s
+
+OK
